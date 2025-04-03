@@ -1,0 +1,60 @@
+
+.TopBar {
+    color: white;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+
+    top: 15px;
+    height: 20px;
+    
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 1000px;
+    width: calc(100% - 70px);
+    
+    text-align: center;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    z-index: 9999;
+
+}
+
+.Content {
+    display: block;
+    margin-top: 90px;
+    
+    margin-left: 50%;
+    transform: translateX(-50%);
+    max-width: 1000px;
+    width: calc(100% - 70px);
+
+    min-height: calc(100vh - 145px);
+
+    padding: 25px;
+}
+
+.Footer {
+    color: white;
+    padding: 5;
+    display: block;
+
+     
+    margin-top: 15px;
+    margin-bottom: 0px;
+
+    margin-left: 50%;
+    transform: translateX(-50%);
+    max-width: 1000px;
+    width: calc(100% - 70px);
+
+    text-align: left;
+    
+}
+
+.FinalPadding {
+    display: block;
+    height: 15px;
+}

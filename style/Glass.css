@@ -1,0 +1,11 @@
+.Glass {
+    background: rgba(50, 50, 50, 0.3); /* Semi-transparent background */
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px); /* Creates the frosted glass blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
+    color: white;
+
+}

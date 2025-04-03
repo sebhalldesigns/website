@@ -1,0 +1,32 @@
+.BackgroundGradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Ensure it is behind other elements */
+    background: repeating-linear-gradient(-15deg, #000314 0%, #000314 25%, #020530 32.5%, #020940 40%, #260136 60%, #200328 67.5%, #000314 75%, #000314 100%);
+    background-size: 100% 600%; /* Adjust as needed for smoothness */
+    animation: gradient 20s cubic-bezier(0, 0.3, 1, 0.7) infinite; /*Adjust animation speed as needed*/
+}
+
+.BackgroundBlur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Ensure it is behind other elements */
+    backdrop-filter: blur(10px); /* Adjust blur intensity as needed */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 0% 100%;
+    }
+}
+
