@@ -1,4 +1,42 @@
-.Serif {
-    font-family: "Space Grotesk", sans-serif;
+h1 {
+    font-family: "Karla", sans-serif;
+    font-optical-sizing: auto;
     font-weight: 400;
+    font-size: 35pt;
+    color: white;
 }
+
+.Title {
+    font-family: "Karla", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: 25pt;
+    color: white;
+    text-decoration: none;
+    user-select: none;
+    padding: 0px 10px 0px 0px;
+}
+
+.NavigationItem {
+    font-family: "Karla", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200;
+    font-size: 25pt;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px 10px 10px;
+    border: none;
+    background-color: transparent;
+	border-color: transparent;
+    cursor: pointer;
+}
+
+@media only screen and (min-width: 750px) {
+    
+    .NavigationItem {
+        font-size: 18pt;
+        padding: 10px 15px 10px 15px;
+    }
+}
+
+

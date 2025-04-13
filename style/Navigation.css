@@ -8,3 +8,109 @@ body {
     background-color: black;
 }
 
+.NavigationBar {
+    color: white;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+
+    top: 15px;
+    height: calc(100% - 70px);
+    max-height: 20px;
+    
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 1000px;
+    width: calc(100% - 70px);
+    
+    display: block;
+
+    overflow: hidden;
+
+    z-index: 9999;
+
+    transition: max-height 0.25s ease;
+}
+
+.NavigationBar.open {
+    max-height: calc(100% - 70px);
+    align-items: start;
+}
+
+.NavigationTitle {
+    display: block;
+    position: absolute;
+    top: 9px;
+    padding: 0pt;
+    background-color: transparent;
+	border-color: transparent;
+    cursor: pointer;
+}
+
+.NavigationMenu {
+    display: flex;
+    position: absolute;
+    top: 50pt;
+    flex-direction: column;
+    align-items: start;
+}
+
+.NavigationMenuControls {
+    display: block;
+    position: absolute;
+    top: 6pt;
+    right: 15px;
+
+    padding: 5px 0px 0px 0px;
+}
+
+.NavigationToggleButton {
+	visibility: visible;
+    display: block;
+    padding: 0pt;
+    border: none;
+    background-color: transparent;
+	border-color: transparent;
+    transition: transform 0.25s ease;
+}
+
+.NavigationToggleButton.open {
+    transform: rotate(45deg);
+}
+
+.NavigationButtonImage {
+	width: 25pt;
+	height: 25pt;
+}
+
+@media only screen and (min-width: 750px) {
+
+    .NavigationBar.open {
+        max-height: 20px;
+    }
+
+    .NavigationMenu {
+        display: flex;
+        flex-direction: row;
+        position: absolute;
+        right: 5px;
+        top: 7px;
+
+        justify-content: end;
+        align-items: right;
+        flex-grow: 1;
+    }
+
+    .NavigationMenuControls { 
+		visibility: hidden;
+        display: none;
+	}
+	
+	.NavigationShowButton {
+		visibility: hidden;
+	}
+	
+	.NavigationHideButton {
+		visibility: hidden;
+	}
+}
