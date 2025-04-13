@@ -1,8 +1,29 @@
+body {
+    height: 100vh;
+    font-family: "Karla", sans-serif;
+    font-size: 14pt;
+    font-weight: 200;
+
+    padding: 0pt;
+    margin: 0pt;
+    overflow-x: hidden;
+    color: white;
+    background-color: black;
+}
+
 h1 {
     font-family: "Karla", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-size: 35pt;
+    color: white;
+}
+
+h3 {
+    font-family: "Karla", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: 18pt;
     color: white;
 }
 
@@ -14,7 +35,7 @@ h1 {
     color: white;
     text-decoration: none;
     user-select: none;
-    padding: 0px 10px 0px 0px;
+    padding: 0px 10px 0px 0px; 
 }
 
 .NavigationItem {
@@ -29,6 +50,15 @@ h1 {
     background-color: transparent;
 	border-color: transparent;
     cursor: pointer;
+}
+
+.SmallTitle {
+    font-family: "Karla", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200;
+    font-size: 18pt;
+    color: white;
+    text-align: center;
 }
 
 @media only screen and (min-width: 750px) {

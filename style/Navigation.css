@@ -1,12 +1,4 @@
-body {
-    height: 100vh;
-    font-family: "Inter", sans-serif;
-    padding: 0pt;
-    margin: 0pt;
-    overflow-x: hidden;
-    color: white;
-    background-color: black;
-}
+
 
 .NavigationBar {
     color: white;

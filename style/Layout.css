@@ -16,20 +16,19 @@
 
 .Footer {
     color: white;
-    padding: 5;
     display: block;
-
      
-    margin-top: 15px;
-    margin-bottom: 0px;
-
     margin-left: 50%;
     transform: translateX(-50%);
     max-width: 1000px;
     width: calc(100% - 70px);
 
-    text-align: left;
-    
+    text-align: left; 
+}
+
+.FooterText {
+    margin-top: 10pt;
+    text-align: center;
 }
 
 .FinalPadding {
