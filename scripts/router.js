@@ -10,14 +10,22 @@ const contentContainer = document.getElementById('Content');
 function loadPage(page) {
 
     fetch(`pages/${page}.html`)
+
     .then(res => {
         if (!res.ok) throw new Error('Page not found');
         return res.text();
     })
+
     .then(html => {
         contentContainer.innerHTML = html;
         window.scrollTo(0, 0); // Optional: scroll to top
+
+        // Use setTimeout with a delay of 0 to defer SetupCarousels
+        setTimeout(() => {
+            SetupCarousels();
+        }, 0); // Delay of 0 ms pushes the function to the end of the current task queue
     })
+
     .catch(err => {
         contentContainer.innerHTML = `<h2>404 - Page not found</h2>`;
     });

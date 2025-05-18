@@ -1,4 +1,9 @@
 
+.CarouselTitle {
+    width: calc(100vw - 110pt); /* Full width minus margins */
+    margin: 24pt 0pt 10pt 0pt;
+}
+
 .CarouselPanel {
     position: relative;
 }
@@ -39,29 +44,38 @@
     background-color: rgba(50, 50, 50, 0.5);
 }
 
-.CarouselButtonImage {
+.CarouselButtonImageLeft {
     width: 12.5pt;
     height: 12.5pt;
     user-select: none;
+    margin-right: 1.5pt;
 }
 
+.CarouselButtonImageRight {
+    width: 12.5pt;
+    height: 12.5pt;
+    user-select: none;
+    margin-left: 1.5pt;
+}
 
 .CarouselContainer {
-    overflow: scroll;
+    overflow: hidden;
     margin: 0 auto;
     position: relative; /* Needed for positioning buttons */
     width: 100%;
     border-radius: 10px;
+
 }
 
 .CarouselSlides {
     display: flex;
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.25s ease-in-out;
+    border-radius: 10px;
 }
 
 .CarouselItem {
-    width: calc(100vw - 70pt); /* Full width minus margins */
-    height: calc((100vw - 70pt) * 0.5);
+    width: calc(100vw - 65pt); /* Full width minus margins */
+    height: calc((100vw - 65pt) * 0.5);
     background-color: rgba(50, 50, 50, 0.3);
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
