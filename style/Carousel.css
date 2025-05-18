@@ -15,6 +15,7 @@
     display: flex;
     align-items: right;
     justify-content: right;
+    
 }
 
 .CarouselButton {
@@ -59,18 +60,29 @@
 }
 
 .CarouselContainer {
-    overflow: hidden;
+    overflow: scroll;
     margin: 0 auto;
     position: relative; /* Needed for positioning buttons */
     width: 100%;
     border-radius: 10px;
 
+     /* Optional: Style or hide the scrollbar */
+     scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    -webkit-overflow-scrolling: touch; /* Smoother scrolling on iOS */
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.CarouselContainer::-webkit-scrollbar {
+    display: none;
+}
+
 
 .CarouselSlides {
     display: flex;
     transition: transform 0.25s ease-in-out;
     border-radius: 10px;
+    gap: 10pt; /* Space between items */
 }
 
 .CarouselItem {
@@ -86,7 +98,7 @@
     text-decoration: none;
     padding: 5pt;
     user-select: none;
-    margin: 0pt 10pt 0pt 0pt;
+    margin: 0;
     flex-shrink: 0;
 }
 

@@ -17,116 +17,262 @@ function SetupCarousels() {
             return;
         }
 
-        // Initialize and store the current translation amount for this carousel
-        let currentTranslate = parseFloat(container.dataset.currentTranslate || '0');
-        container.dataset.currentTranslate = currentTranslate;
+        // State variable to track if a smooth scroll is in progress
+        let isScrolling = false;
+        let scrollTimeout = null; // To track the scroll end timeout
 
-        // Function to apply a specific translation amount, with clamping
-        function applyTranslation(translation) {
-             // Recalculate dimensions as they might change on window resize
-            const itemWidth = carouselItems[0]?.offsetWidth || 0;
-            const itemMarginRight = carouselItems[0] ? parseInt(getComputedStyle(carouselItems[0]).marginRight) : 0;
-            const itemTotalWidth = itemWidth + itemMarginRight;
-            const totalSlidesWidth = carouselItems.length * itemTotalWidth;
+        // Function to scroll to a specific position with clamping, wrapping, and snapping
+        function scrollToPosition(targetScrollLeft) {
             const containerWidth = container.offsetWidth;
+            const scrollWidth = container.scrollWidth;
+            const maxScrollLeft = scrollWidth - containerWidth;
 
-            // Calculate the maximum possible translation to the left (most negative value)
-            const maxLeftTranslate = containerWidth - totalSlidesWidth;
-            const minTranslate = 0; // Most positive allowed (no translation)
+            let finalScrollLeft = targetScrollLeft;
 
-            // Clamp the translation to ensure it's within bounds
-            const clampedTranslate = Math.max(maxLeftTranslate, translation);
-            const finalTranslate = Math.min(minTranslate, clampedTranslate);
-
-            carouselSlides.style.transform = `translateX(${finalTranslate}px)`;
-
-            // Update the stored translation amount
-            container.dataset.currentTranslate = finalTranslate;
-
-            // Optional: Update the data-current-slide-index based on the translation amount
-            if (itemTotalWidth > 0) {
-                 const closestIndex = Math.round(-finalTranslate / itemTotalWidth);
-                 container.dataset.currentSlideIndex = Math.max(0, Math.min(carouselItems.length - 1, closestIndex));
-            } else {
-                 container.dataset.currentSlideIndex = 0;
+            // Handle wrapping for next button when at the end
+            if (targetScrollLeft > maxScrollLeft && container.scrollLeft >= maxScrollLeft - 1) {
+                 finalScrollLeft = 0; // Wrap to the beginning
             }
+            // Handle wrapping for previous button when at the beginning
+            else if (targetScrollLeft < 0 && container.scrollLeft <= 1) {
+                 finalScrollLeft = maxScrollLeft; // Wrap to the end
+            } else {
+                // Clamp the scroll position within the valid range if not wrapping
+                 finalScrollLeft = Math.max(0, Math.min(maxScrollLeft, targetScrollLeft));
+            }
+
+            // --- Snap to the nearest item boundary after initial calculation ---
+            let closestScrollLeft = 0;
+            let minDiff = Infinity;
+
+             // Ensure items exist before trying to access offsetLeft
+             if (carouselItems.length > 0) {
+                for (let i = 0; i < carouselItems.length; i++) {
+                    const item = carouselItems[i];
+                    // item.offsetLeft gives the position of the item's left edge
+                    // relative to the start of the offsetParent (the flex container)
+                    const itemOffsetLeft = item.offsetLeft;
+
+                    const diff = Math.abs(finalScrollLeft - itemOffsetLeft);
+
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        closestScrollLeft = itemOffsetLeft;
+                    }
+                    // Optimization: if itemOffsetLeft is significantly past the target, no need to check further
+                    // Add tolerance
+                     if (itemOffsetLeft > finalScrollLeft + containerWidth + 10) {
+                         break;
+                     }
+                }
+                 // Use the closest item's offsetLeft as the final snapped scroll position
+                 finalScrollLeft = closestScrollLeft;
+
+                 // Re-clamp the snapped position to ensure it's within the overall scroll bounds
+                 finalScrollLeft = Math.max(0, Math.min(maxScrollLeft, finalScrollLeft));
+
+             } else {
+                 finalScrollLeft = 0; // Default to 0 if no items
+             }
+            // --- End Snap Logic ---
+
+
+            // If the target position is the same as the current position, do nothing
+            // This prevents unnecessary scrolls and helps with button responsiveness
+            if (Math.abs(finalScrollLeft - container.scrollLeft) < 1) { // Add a small tolerance
+                // Ensure buttons are enabled if no scrolling is happening
+                 if (!isScrolling) {
+                     prevButton.disabled = false;
+                     nextButton.disabled = false;
+                 }
+                return;
+            }
+
+
+            // Set scrolling state and disable buttons
+            isScrolling = true;
+            prevButton.disabled = true;
+            nextButton.disabled = true;
+
+
+            // Use smooth scrolling
+            container.scrollTo({
+                left: finalScrollLeft,
+                behavior: 'smooth'
+            });
+
+            // The scroll event listener will handle resetting isScrolling and re-enabling buttons
+             // It also handles updating the index estimation based on the final scroll position.
         }
 
-        // Event listener for the Next button
+
+        // Event listener for the Next button - Scroll by one item width + gap
         nextButton.addEventListener('click', () => {
-            const currentTranslate = parseFloat(container.dataset.currentTranslate);
+            // If already scrolling, ignore the click
+            if (isScrolling) {
+                return;
+            }
 
-            // Recalculate dimensions for accurate check
+             // Recalculate item width and gap for accurate scroll amount
             const itemWidth = carouselItems[0]?.offsetWidth || 0;
-            const itemMarginRight = carouselItems[0] ? parseInt(getComputedStyle(carouselItems[0]).marginRight) : 0;
-            const itemTotalWidth = itemWidth + itemMarginRight;
-            const totalSlidesWidth = carouselItems.length * itemTotalWidth;
-            const containerWidth = container.offsetWidth;
-            const maxLeftTranslate = containerWidth - totalSlidesWidth;
+             // Get the computed horizontal gap (split handles potential "Xpx Ypx" format)
+             const computedGap = parseFloat(getComputedStyle(carouselSlides).gap.split(' ')[0]) || 0;
+            const itemScrollAmount = itemWidth + computedGap;
 
-            let targetTranslate;
-
-            // Check if we are already at the end (within a small tolerance for floating point issues)
-            if (Math.abs(currentTranslate - maxLeftTranslate) < 1) {
-                 // If at the end, wrap around to the beginning
-                 targetTranslate = 0;
-            } else {
-                 // Calculate the translation for the next item's left edge
-                 const translateByItem = currentTranslate - itemTotalWidth;
-
-                 // If scrolling by one item width would go past the end,
-                 // scroll exactly to the end instead.
-                 targetTranslate = Math.max(translateByItem, maxLeftTranslate);
-            }
-
-            applyTranslation(targetTranslate);
+            const targetScrollLeft = container.scrollLeft + itemScrollAmount;
+            scrollToPosition(targetScrollLeft);
         });
 
-        // Event listener for the Previous button
+        // Event listener for the Previous button - Scroll by one item width + gap
         prevButton.addEventListener('click', () => {
-            const currentTranslate = parseFloat(container.dataset.currentTranslate);
-
-             // Recalculate dimensions for accurate check
-             const itemWidth = carouselItems[0]?.offsetWidth || 0;
-             const itemMarginRight = carouselItems[0] ? parseInt(getComputedStyle(carouselItems[0]).marginRight) : 0;
-             const itemTotalWidth = itemWidth + itemMarginRight;
-             const totalSlidesWidth = carouselItems.length * itemTotalWidth; // Needed for maxLeftTranslate in wrap
-             const containerWidth = container.offsetWidth; // Needed for maxLeftTranslate in wrap
-             const maxLeftTranslate = containerWidth - totalSlidesWidth; // Needed for wrap
-
-
-            let targetTranslate;
-
-            // Check if we are already at the beginning (translation is 0)
-            if (Math.abs(currentTranslate - 0) < 1) {
-                 // If at the beginning, wrap around to the end
-                 targetTranslate = maxLeftTranslate;
-            } else {
-                 // Calculate the translation for the previous item's left edge
-                 const translateByItem = currentTranslate + itemTotalWidth;
-
-                 // Ensure we don't scroll past the beginning (translation cannot be positive)
-                 targetTranslate = Math.min(translateByItem, 0);
+             // If already scrolling, ignore the click
+            if (isScrolling) {
+                return;
             }
 
-            applyTranslation(targetTranslate);
+             // Recalculate item width and gap for accurate scroll amount
+            const itemWidth = carouselItems[0]?.offsetWidth || 0;
+             const computedGap = parseFloat(getComputedStyle(carouselSlides).gap.split(' ')[0]) || 0;
+            const itemScrollAmount = itemWidth + computedGap;
+
+            const targetScrollLeft = container.scrollLeft - itemScrollAmount;
+            scrollToPosition(targetScrollLeft);
         });
 
-        // Initial display: Apply the stored translation or start at the beginning
-        applyTranslation(currentTranslate);
-        // Ensure the index is also initialized correctly based on the initial translation
-        if (carouselItems.length > 0 && (carouselItems[0]?.offsetWidth || 0) > 0) {
-            const itemTotalWidth = (carouselItems[0].offsetWidth || 0) + parseInt(getComputedStyle(carouselItems[0]).marginRight);
-             const closestIndex = Math.round(-currentTranslate / itemTotalWidth);
-             container.dataset.currentSlideIndex = Math.max(0, Math.min(carouselItems.length - 1, closestIndex));
+        // Listen for user scrolling and the end of smooth scrolling
+        container.addEventListener('scroll', () => {
+            // Clear the previous timeout
+            clearTimeout(scrollTimeout);
+
+            // Set a new timeout to detect the end of scrolling
+            // This timeout duration determines how long after the last 'scroll' event
+            // we consider the scrolling to have stopped.
+            scrollTimeout = setTimeout(() => {
+                // Scrolling has likely stopped
+                isScrolling = false;
+                prevButton.disabled = false;
+                nextButton.disabled = false;
+
+                // Update the stored scroll position
+                container.dataset.currentScrollLeft = container.scrollLeft;
+
+
+                // Re-estimate the closest index after scrolling stops
+                 if (carouselItems.length > 0) {
+                      let closestIndex = 0;
+                      let minDiff = Infinity;
+                      const computedGap = parseFloat(getComputedStyle(carouselSlides).gap.split(' ')[0]) || 0;
+
+                      for(let i = 0; i < carouselItems.length; i++) {
+                          const item = carouselItems[i];
+                          const itemOffsetLeft = item.offsetLeft;
+
+                          const diff = Math.abs(container.scrollLeft - itemOffsetLeft);
+
+                          if (diff < minDiff) {
+                              minDiff = diff;
+                              closestIndex = i;
+                          }
+                           // Optimization
+                           const containerWidth = container.offsetWidth;
+                           if (itemOffsetLeft > container.scrollLeft + containerWidth + 10) {
+                               break;
+                           }
+                      }
+                     container.dataset.currentSlideIndex = closestIndex;
+                  } else {
+                       container.dataset.currentSlideIndex = 0;
+                  }
+
+            }, 150); // Adjust timeout duration as needed (e.g., 150ms is often reliable)
+
+             // While scrolling, you could update UI elements here if needed
+             // For example, changing button opacity based on scroll position.
+        });
+
+        // Initial setup when the page loads or content is loaded
+        // Apply the stored scroll position directly (no smooth behavior on initial load)
+         const initialScrollLeft = parseFloat(container.dataset.currentScrollLeft || '0');
+         container.scrollLeft = initialScrollLeft;
+         container.dataset.currentScrollLeft = container.scrollLeft; // Store the actual initial position
+
+         // Initial button state: enabled by default, will be disabled by scrollToPosition if called
+         prevButton.disabled = false;
+         nextButton.disabled = false;
+
+         // Initial index estimation
+         if (carouselItems.length > 0) {
+              const containerWidth = container.offsetWidth;
+              const computedGap = parseFloat(getComputedStyle(carouselSlides).gap.split(' ')[0]) || 0;
+
+              let closestIndex = 0;
+              let minDiff = Infinity;
+              for(let i = 0; i < carouselItems.length; i++) {
+                  const item = carouselItems[i];
+                  const itemOffsetLeft = item.offsetLeft;
+
+                  const diff = Math.abs(container.scrollLeft - itemOffsetLeft);
+
+                  if (diff < minDiff) {
+                      minDiff = diff;
+                      closestIndex = i;
+                  }
+                   const tempContainerWidth = container.offsetWidth; // Get width inside loop
+                   if (itemOffsetLeft > container.scrollLeft + tempContainerWidth + 10) {
+                       break;
+                   }
+              }
+             container.dataset.currentSlideIndex = closestIndex;
          } else {
               container.dataset.currentSlideIndex = 0;
          }
 
-        // Optional: Add a resize observer to re-apply translation on window resize
-        // to ensure correct clamping if container/item sizes change.
+
+        // ResizeObserver to handle layout changes and re-clamp scroll/update index
         new ResizeObserver(() => {
-            applyTranslation(parseFloat(container.dataset.currentTranslate || '0'));
-        }).observe(container);
+             const containerWidth = container.offsetWidth;
+             const scrollWidth = container.scrollWidth;
+             const maxScrollLeft = scrollWidth - containerWidth;
+             let currentScrollLeft = container.scrollLeft;
+
+             // Clamp the current scroll position if it's out of bounds after resize
+             const clampedScrollLeft = Math.max(0, Math.min(maxScrollLeft, currentScrollLeft));
+
+             // If clamping changed the position, scroll to the clamped position smoothly
+             // (This might trigger the scroll event listener)
+             if (Math.abs(clampedScrollLeft - currentScrollLeft) > 1) { // Use tolerance
+                  container.scrollTo({
+                     left: clampedScrollLeft,
+                     behavior: 'smooth'
+                  });
+             }
+             // Update the stored scroll position regardless
+             container.dataset.currentScrollLeft = container.scrollLeft;
+
+
+             // Re-estimate index after resize (using the actual current scrollLeft)
+             const computedGap = parseFloat(getComputedStyle(carouselSlides).gap.split(' ')[0]) || 0;
+              let closestIndex = 0;
+              let minDiff = Infinity;
+              for(let i = 0; i < carouselItems.length; i++) {
+                  const item = carouselItems[i];
+                  const itemOffsetLeft = item.offsetLeft;
+                  const diff = Math.abs(container.scrollLeft - itemOffsetLeft);
+                  if (diff < minDiff) {
+                      minDiff = diff;
+                      closestIndex = i;
+                  }
+                   const tempContainerWidth = container.offsetWidth; // Get width inside loop
+                   if (itemOffsetLeft > container.scrollLeft + tempContainerWidth + 10) {
+                       break;
+                   }
+              }
+             container.dataset.currentSlideIndex = closestIndex;
+
+             // Re-evaluate button states based on new scroll position and maxScrollLeft if not looping
+             // If looping, buttons are always enabled.
+         }).observe(container);
+
+
     });
 }
