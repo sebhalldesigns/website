@@ -43,6 +43,10 @@
 
 .CarouselButton:hover {
     background-color: rgba(50, 50, 50, 0.5);
+    -webkit-transition: background-color 0.25s ease-in-out;
+    -ms-transition: background-color 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out;
+    cursor: pointer;
 }
 
 .CarouselButtonImageLeft {
@@ -100,6 +104,14 @@
     user-select: none;
     margin: 0;
     flex-shrink: 0;
+}
+
+.CarouselItem:hover {
+    background-color: rgba(50, 50, 50, 0.5);
+    -webkit-transition: background-color 0.25s ease-in-out;
+    -ms-transition: background-color 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out;
+    cursor: pointer;
 }
 
 @media only screen and (min-width: 500px) {

@@ -21,6 +21,27 @@ function SetupCarousels() {
         let isScrolling = false;
         let scrollTimeout = null; // To track the scroll end timeout
 
+        // --- Auto-play variables ---
+        let autoPlayInterval = null;
+        const autoPlayDelay = 5000; // Time in milliseconds before auto-advancing (e.g., 5 seconds)
+
+        // Function to start auto-play
+        function startAutoPlay() {
+            stopAutoPlay(); // Clear any existing interval first
+            autoPlayInterval = setInterval(() => {
+                // Trigger the next item scroll
+                showNextItem(); // Use a dedicated function for advancing
+            }, autoPlayDelay);
+        }
+
+        // Function to stop auto-play
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
+        }
+        // --- End Auto-play variables and functions ---
+
+
         // Function to scroll to a specific position with clamping, wrapping, and snapping
         function scrollToPosition(targetScrollLeft) {
             const containerWidth = container.offsetWidth;
@@ -45,12 +66,9 @@ function SetupCarousels() {
             let closestScrollLeft = 0;
             let minDiff = Infinity;
 
-             // Ensure items exist before trying to access offsetLeft
              if (carouselItems.length > 0) {
                 for (let i = 0; i < carouselItems.length; i++) {
                     const item = carouselItems[i];
-                    // item.offsetLeft gives the position of the item's left edge
-                    // relative to the start of the offsetParent (the flex container)
                     const itemOffsetLeft = item.offsetLeft;
 
                     const diff = Math.abs(finalScrollLeft - itemOffsetLeft);
@@ -59,13 +77,11 @@ function SetupCarousels() {
                         minDiff = diff;
                         closestScrollLeft = itemOffsetLeft;
                     }
-                    // Optimization: if itemOffsetLeft is significantly past the target, no need to check further
-                    // Add tolerance
-                     if (itemOffsetLeft > finalScrollLeft + containerWidth + 10) {
+                     const tempContainerWidth = container.offsetWidth; // Get width inside loop
+                     if (itemOffsetLeft > finalScrollLeft + tempContainerWidth + 10) {
                          break;
                      }
                 }
-                 // Use the closest item's offsetLeft as the final snapped scroll position
                  finalScrollLeft = closestScrollLeft;
 
                  // Re-clamp the snapped position to ensure it's within the overall scroll bounds
@@ -78,9 +94,7 @@ function SetupCarousels() {
 
 
             // If the target position is the same as the current position, do nothing
-            // This prevents unnecessary scrolls and helps with button responsiveness
-            if (Math.abs(finalScrollLeft - container.scrollLeft) < 1) { // Add a small tolerance
-                // Ensure buttons are enabled if no scrolling is happening
+            if (Math.abs(finalScrollLeft - container.scrollLeft) < 1) {
                  if (!isScrolling) {
                      prevButton.disabled = false;
                      nextButton.disabled = false;
@@ -106,47 +120,57 @@ function SetupCarousels() {
         }
 
 
-        // Event listener for the Next button - Scroll by one item width + gap
-        nextButton.addEventListener('click', () => {
-            // If already scrolling, ignore the click
-            if (isScrolling) {
-                return;
-            }
-
+        // --- Dedicated functions for advancing/retreating (used by buttons and auto-play) ---
+         function showNextItem() {
              // Recalculate item width and gap for accurate scroll amount
             const itemWidth = carouselItems[0]?.offsetWidth || 0;
-             // Get the computed horizontal gap (split handles potential "Xpx Ypx" format)
              const computedGap = parseFloat(getComputedStyle(carouselSlides).gap.split(' ')[0]) || 0;
             const itemScrollAmount = itemWidth + computedGap;
 
             const targetScrollLeft = container.scrollLeft + itemScrollAmount;
             scrollToPosition(targetScrollLeft);
+         }
+
+         function showPrevItem() {
+             // Recalculate item width and gap
+             const itemWidth = carouselItems[0]?.offsetWidth || 0;
+             const computedGap = parseFloat(getComputedStyle(carouselSlides).gap.split(' ')[0]) || 0;
+             const itemScrollAmount = itemWidth + computedGap;
+
+             const targetScrollLeft = container.scrollLeft - itemScrollAmount;
+             scrollToPosition(targetScrollLeft);
+         }
+        // --- End Dedicated functions ---
+
+
+        // Event listener for the Next button - Scroll by one item width + gap
+        nextButton.addEventListener('click', () => {
+            if (isScrolling) {
+                return;
+            }
+            stopAutoPlay(); // Stop auto-play on user interaction
+            showNextItem(); // Use the dedicated function
+            // Auto-play will restart after scrolling stops (handled in scroll event)
         });
 
         // Event listener for the Previous button - Scroll by one item width + gap
         prevButton.addEventListener('click', () => {
-             // If already scrolling, ignore the click
             if (isScrolling) {
                 return;
             }
-
-             // Recalculate item width and gap for accurate scroll amount
-            const itemWidth = carouselItems[0]?.offsetWidth || 0;
-             const computedGap = parseFloat(getComputedStyle(carouselSlides).gap.split(' ')[0]) || 0;
-            const itemScrollAmount = itemWidth + computedGap;
-
-            const targetScrollLeft = container.scrollLeft - itemScrollAmount;
-            scrollToPosition(targetScrollLeft);
+            stopAutoPlay(); // Stop auto-play on user interaction
+            showPrevItem(); // Use the dedicated function
+             // Auto-play will restart after scrolling stops (handled in scroll event)
         });
 
         // Listen for user scrolling and the end of smooth scrolling
         container.addEventListener('scroll', () => {
-            // Clear the previous timeout
+            stopAutoPlay(); // Stop auto-play immediately on any scroll
+
+            // Clear the previous timeout for detecting scroll end
             clearTimeout(scrollTimeout);
 
             // Set a new timeout to detect the end of scrolling
-            // This timeout duration determines how long after the last 'scroll' event
-            // we consider the scrolling to have stopped.
             scrollTimeout = setTimeout(() => {
                 // Scrolling has likely stopped
                 isScrolling = false;
@@ -155,7 +179,6 @@ function SetupCarousels() {
 
                 // Update the stored scroll position
                 container.dataset.currentScrollLeft = container.scrollLeft;
-
 
                 // Re-estimate the closest index after scrolling stops
                  if (carouselItems.length > 0) {
@@ -173,9 +196,8 @@ function SetupCarousels() {
                               minDiff = diff;
                               closestIndex = i;
                           }
-                           // Optimization
-                           const containerWidth = container.offsetWidth;
-                           if (itemOffsetLeft > container.scrollLeft + containerWidth + 10) {
+                           const tempContainerWidth = container.offsetWidth; // Get width inside loop
+                           if (itemOffsetLeft > container.scrollLeft + tempContainerWidth + 10) {
                                break;
                            }
                       }
@@ -184,11 +206,21 @@ function SetupCarousels() {
                        container.dataset.currentSlideIndex = 0;
                   }
 
-            }, 150); // Adjust timeout duration as needed (e.g., 150ms is often reliable)
+                startAutoPlay(); // Restart auto-play after scrolling stops
+
+            }, 150); // Adjust timeout duration as needed
 
              // While scrolling, you could update UI elements here if needed
-             // For example, changing button opacity based on scroll position.
         });
+
+        // --- Optional: Pause auto-play on mouseover/focus ---
+         container.addEventListener('mouseenter', stopAutoPlay);
+         container.addEventListener('mouseleave', startAutoPlay);
+         // Also consider 'focusin' and 'focusout' for keyboard navigation/accessibility
+         container.addEventListener('focusin', stopAutoPlay);
+         container.addEventListener('focusout', startAutoPlay);
+        // --- End Optional ---
+
 
         // Initial setup when the page loads or content is loaded
         // Apply the stored scroll position directly (no smooth behavior on initial load)
@@ -230,27 +262,26 @@ function SetupCarousels() {
 
         // ResizeObserver to handle layout changes and re-clamp scroll/update index
         new ResizeObserver(() => {
+             stopAutoPlay(); // Stop auto-play during resize
+
              const containerWidth = container.offsetWidth;
              const scrollWidth = container.scrollWidth;
              const maxScrollLeft = scrollWidth - containerWidth;
              let currentScrollLeft = container.scrollLeft;
 
-             // Clamp the current scroll position if it's out of bounds after resize
              const clampedScrollLeft = Math.max(0, Math.min(maxScrollLeft, currentScrollLeft));
 
              // If clamping changed the position, scroll to the clamped position smoothly
-             // (This might trigger the scroll event listener)
-             if (Math.abs(clampedScrollLeft - currentScrollLeft) > 1) { // Use tolerance
+             if (Math.abs(clampedScrollLeft - currentScrollLeft) > 1) {
                   container.scrollTo({
                      left: clampedScrollLeft,
                      behavior: 'smooth'
                   });
              }
-             // Update the stored scroll position regardless
              container.dataset.currentScrollLeft = container.scrollLeft;
 
 
-             // Re-estimate index after resize (using the actual current scrollLeft)
+             // Re-estimate index after resize
              const computedGap = parseFloat(getComputedStyle(carouselSlides).gap.split(' ')[0]) || 0;
               let closestIndex = 0;
               let minDiff = Infinity;
@@ -269,10 +300,12 @@ function SetupCarousels() {
               }
              container.dataset.currentSlideIndex = closestIndex;
 
-             // Re-evaluate button states based on new scroll position and maxScrollLeft if not looping
-             // If looping, buttons are always enabled.
+             // Auto-play will be restarted after resize finishes and scrolling (if any) stops
          }).observe(container);
 
+        // --- Start auto-play initially ---
+        startAutoPlay();
+        // --- End Start auto-play ---
 
     });
 }

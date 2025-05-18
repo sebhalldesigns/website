@@ -91,6 +91,15 @@
     user-select: none;
 }
 
+.HomeMediaButton:hover {
+    background-color: rgba(50, 50, 50, 0.5);
+    -webkit-transition: background-color 0.25s ease-in-out;
+    -ms-transition: background-color 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out;
+    cursor: pointer;
+}
+
+
 .HomeMediaButtonImage {
     width: 17.5pt;
     height: 17.5pt;
