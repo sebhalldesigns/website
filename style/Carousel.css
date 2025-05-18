@@ -1,0 +1,84 @@
+
+.CarouselPanel {
+    position: relative;
+}
+
+.CarouselButtonsContainer {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    align-items: right;
+    justify-content: right;
+}
+
+.CarouselButton {
+    display: flex;
+    margin: 0pt 2pt 0pt 0pt;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: "Karla", sans-serif;
+    font-weight: 300;
+    font-size: 14pt;
+    background-color: rgba(50, 50, 50, 0.3);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
+    backdrop-filter: blur(10px); /* Creates the frosted glass blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    color: white;
+    text-decoration: none;
+    padding: 4pt;
+    width: fit-content;
+    cursor: pointer;
+}
+
+.CarouselButton:hover {
+    background-color: rgba(50, 50, 50, 0.5);
+}
+
+.CarouselButtonImage {
+    width: 12.5pt;
+    height: 12.5pt;
+    user-select: none;
+}
+
+
+.CarouselContainer {
+    overflow: scroll;
+    margin: 0 auto;
+    position: relative; /* Needed for positioning buttons */
+    width: 100%;
+    border-radius: 10px;
+}
+
+.CarouselSlides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.CarouselItem {
+    width: calc(100vw - 70pt); /* Full width minus margins */
+    height: calc((100vw - 70pt) * 0.5);
+    background-color: rgba(50, 50, 50, 0.3);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
+    backdrop-filter: blur(10px); /* Creates the frosted glass blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    color: white;
+    text-decoration: none;
+    padding: 5pt;
+    user-select: none;
+    margin: 0pt 10pt 0pt 0pt;
+    flex-shrink: 0;
+}
+
+@media only screen and (min-width: 500px) {
+    .CarouselItem {
+        width: 300pt;
+        height: 150pt;
+    }
+}
