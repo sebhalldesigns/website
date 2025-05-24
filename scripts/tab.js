@@ -10,6 +10,7 @@ function SetupTabBar() {
             // Calculate the new left position based on the clicked button
             const newLeft = buttonRect.left - parentRect.left + "px";
             selector.style.left = newLeft;
+            selector.offsetHeight; // Force reflow
             selector.style.width = buttonRect.width + "px";
         });
     });
@@ -19,6 +20,7 @@ function SetupTabBar() {
         const firstButtonRect = buttons[0].getBoundingClientRect();
         const parentRect = buttons[0].parentElement.getBoundingClientRect();
         selector.style.left = firstButtonRect.left - parentRect.left + "px";
+        selector.offsetHeight; // Force reflow
         selector.style.width = firstButtonRect.width + "px";
     }
 
@@ -28,6 +30,7 @@ function SetupTabBar() {
             const firstButtonRect = buttons[0].getBoundingClientRect();
             const parentRect = buttons[0].parentElement.getBoundingClientRect();
             selector.style.left = firstButtonRect.left - parentRect.left + "px";
+            selector.offsetHeight; // Force reflow
             selector.style.width = firstButtonRect.width + "px";
         }
     });
