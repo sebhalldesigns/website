@@ -77,6 +77,6 @@
     }
     .DesignsTabButton::before {
         content: attr(data-label); /* Display shorter text */
-        font-size: 14pt;
+        font-size: 15pt;
     }
 }

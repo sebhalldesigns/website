@@ -23,12 +23,14 @@ function loadPage(page) {
         // Use setTimeout with a delay of 0 to defer SetupCarousels
         setTimeout(() => {
             try {
-                SetupCarousels();
+                SetupTabBar();
             } catch (error) {}
 
             try {
-                SetupTabBar();
+                SetupCarousels();
             } catch (error) {}
+
+      
             
             
         }, 0); // Delay of 0 ms pushes the function to the end of the current task queue

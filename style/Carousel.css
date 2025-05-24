@@ -90,7 +90,7 @@
 }
 
 .CarouselItem {
-    width: calc(100vw - 65pt); /* Full width minus margins */
+    width: calc(100vw - 35pt); /* Full width minus margins */
     height: calc((100vw - 65pt) * 0.5);
     background-color: rgba(50, 50, 50, 0.3);
     border-radius: 10px;
@@ -114,7 +114,7 @@
     cursor: pointer;
 }
 
-@media only screen and (min-width: 500px) {
+@media only screen and (min-width: 450px) {
     .CarouselItem {
         width: 300pt;
         height: 150pt;

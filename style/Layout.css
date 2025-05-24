@@ -7,11 +7,11 @@
     margin-left: 50%;
     transform: translateX(-50%);
     max-width: 1000px;
-    width: calc(100% - 70px);
+    width: calc(100% - 30px);
 
     min-height: calc(100vh - 145px);
 
-    padding: 25px;
+    padding: 5px;
 }
 
 .Footer {
@@ -36,4 +36,10 @@
     height: 15px;
 }
 
+@media screen and (min-width: 750px) {
+    .Content {
+        width: calc(100% - 70px);
+        padding: 25px;
+    }
+}
 
