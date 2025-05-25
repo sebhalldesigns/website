@@ -29,8 +29,18 @@ function SelectButton(button) {
 
     const buttons = document.querySelectorAll(".DesignsTabButton");
     const selector = document.querySelector(".DesignsTabButtonSelector");
+
+    for (const btn of buttons) {
+        const buttonTargetContent = document.getElementById(btn.id + "Content");
+
+        if (buttonTargetContent != null && btn === button) {
+            buttonTargetContent.hidden = false;
+        } else if (buttonTargetContent != null) {
+            buttonTargetContent.hidden = true;
+        }
+    }
     
-     const buttonRect = button.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
     const parentRect = button.parentElement.getBoundingClientRect();
 
     // Calculate the new left position based on the clicked button
@@ -38,7 +48,6 @@ function SelectButton(button) {
     selector.style.left = newLeft;
     selector.offsetHeight; // Force reflow
     selector.style.width = buttonRect.width + "px";
-
 
     selectedButton = button;
 }

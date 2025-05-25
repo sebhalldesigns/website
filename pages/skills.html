@@ -7,23 +7,89 @@
         <div class="Glass DesignsTabSwitcher">
             <div class="DesignsTabButtonSelector">
             </div>
-            <button class="DesignsTabButton" data-label="S-WARE">
+            <button class="DesignsTabButton" data-label="S-WARE" id="SwareTab">
                 SOFTWARE
             </button>
-            <button class="DesignsTabButton" data-label="ELEC">
+            <button class="DesignsTabButton" data-label="ELEC" id="ElecTab">
                 ELECTRICAL
             </button>
-            <button class="DesignsTabButton" data-label="MECH">
+            <button class="DesignsTabButton" data-label="MECH" id="MechTab">
                 MECHANICAL
             </button>
-            <button class="DesignsTabButton" data-label="OTHER">
+            <button class="DesignsTabButton" data-label="OTHER" id="OtherTab">
                 OTHER
             </button>
         </div>
     </div>
     
     <div class="Glass DesignsContent">
-        
+        <div id="SwareTabContent" hidden>
+            <h2>Programming Languages</h2>
+                <ul>
+                    <li>C</li>
+                    <li>C++</li>
+                    <li>C#</li>
+                    <li>Rust</li>
+                    <li>MATLAB & Simulink</li>
+                    <li>JavaScript</li>
+                </ul>
+                
+            <h2>Scripting</h2>
+                <ul>
+                    <li>CMake</li>
+                    <li>Python</li>
+                    <li>Shell Scripting</li>
+                </ul>
+
+        </div>
+
+        <div id="ElecTabContent" hidden>
+            <h2>Design</h2>
+            <ul>
+                <li>Altium Designer PCB Design</li>
+                <li>KiCad PCB Design</li>
+                <li>FPGA Design with SystemVerilog</li>
+                <li>CAN Network Design</li>
+            </ul>
+            
+            <h2>Analysis</h2>
+            <ul>
+                <li>LTSpice Circuit Simulation</li>
+                <li>CAN Analsis with BUSMASTER</li>
+            </ul>
+        </div>
+
+        <div id="MechTabContent" hidden>
+            <h2>Design</h2>
+            <ul>
+                <li>Autodesk Inventor</li>
+                <li>SolidWorks</li>
+                <li>Fusion 360</li>
+            </ul>
+            
+            <h2>Modelling</h2>
+            <ul>
+                <li>Physical Modelling with MATLAB, Simulink and Stateflow</li>
+            </ul>
+        </div>
+
+        <div id="OtherTabContent" hidden>
+            <h2>Management</h2>
+
+            <ul>
+                <li>Jira Planning</li>
+                <li>Git Version Control</li>
+                <li>GitHub Project Management</li>
+            </ul>   
+
+            <h2>Productivity</h2>
+
+            <ul>
+                <li>Microsoft M365 (Office) Suite</li>
+                <li>Microsoft Teams</li>
+                <li>Google Workspace (Docs, Sheets, Slides)</li>
+            </ul>
+        </div>
     </div>
 
 </main>

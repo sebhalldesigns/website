@@ -7,20 +7,99 @@
         <div class="Glass DesignsTabSwitcher">
             <div class="DesignsTabButtonSelector">
             </div>
-            <button class="DesignsTabButton" data-label="CONTROL">
+            <button class="DesignsTabButton" data-label="CONTROL" id="ControlTab">
                 CONTROL & REALTIME
             </button>
-            <button class="DesignsTabButton" data-label="GRAPHICS">
+            <button class="DesignsTabButton" data-label="GRAPHICS" id="GraphicsTab">
                 GRAPHICS & UI
             </button>
-            <button class="DesignsTabButton" data-label="H-WARE">
+            <button class="DesignsTabButton" data-label="H-WARE" id="HwareTab">
                 HARDWARE & MECH
             </button>
         </div>
     </div>
     
     <div class="Glass DesignsContent">
-        
+        <div id="ControlTabContent" hidden>
+            <h2>foxdbg</h2>
+            A lightweight, cross-platform implementation of the Foxglove Studio protocol, using parallel threads, atomics and JPEG compression to ensure high performance with minimal latency.
+            
+            <h2>TBReAI</h2>
+            A Formula Student AI system implementing a full self-driving stack, including perception, navigation and control.
+            Uniquely to this project, the system is implemented with a fully cross-platform architecture, opting for a monolithic approach that removes dependency on the ROS ecosystem (mainly intended for Ubuntu), while reducing latency and overhead introduced by realtime TCP communications.
+
+            <ul>
+                <li>
+                    <h3>Perception</h3>
+                    Using OpenCV and LibPCL, camera images and lidar point-clouds are processed to identify objects in the vehicle's environment.
+                </li>
+
+                <li>
+                    <h3>Navigation</h3>
+                    An online EKF SLAM system continuously maps the vehicle's environment, adjusting its position and planning a smooth trajectory around the track.
+                </li>
+
+                <li>
+                    <h3>Control</h3>
+                    Realtime vehicle control logic manages communication with the vehicle over a CAN bus, managing state machines for powertrain management and completion of competition scenarios.
+                </li>
+
+                <li>
+                    <h3>Runtime</h3>
+                    A runtime abstraction layer provides a consistent interface for the self-driving system, allowing for seamless running on production hardware, alongside multiple simulation environments.
+                </li>
+            </ul>
+     
+            <h2>TBReSim</h2>
+            A cross-platform vehicle simulator for TBReAI, built with the Unity game engine and using shared memory and discrete time synchronisation to ensure high-performance, deterministic simulation.
+        </div>
+
+        <div id="GraphicsTabContent" hidden>
+            <h2>NanoKit</h2>
+            A set of lightweight, cross-platform libraries for building hardware accelerated user interfaces using OpenGL.
+
+             <ul>
+                <li>
+                    <h3>NanoWin</h3>
+                    A windowing library for creating and managing windows, input and events. NanoWin provides backends for Win32, X11, macOS AppKit and WebAssembly HTML5 Canvas.
+                </li>
+
+                <li>
+                    <h3>NanoDraw</h3>
+                    A library for optimised rendering of 2D graphics using OpenGL.
+                </li>
+
+                <li>
+                    <h3>NanoView</h3>
+                    A library implementing a generic view model for building interfaces, including a library of common controls such as buttons, sliders and text inputs.
+                </li>
+
+                <li>
+                    <h3>NKGen</h3>
+                    A code generator for automatic generation of C source files from XML file definitions and supporting logic files (similar to C#'s XAML and AXAML). 
+                    Integrated into the CMake build system, NKGen will run automatically at build time.
+                </li>
+
+            </ul>
+            
+            <h2>website</h2>
+            This portfolio website, written with vanilla JavaScript, HTML and CSS, and hosted statically on GitHub Pages.
+
+        </div>
+
+        <div id="HwareTabContent" hidden>
+            <h2>Jetson Breakout</h2>
+            An PCB breakout board for the Nvidia Jetson AGX Orin, containing two CAN transceivers and 60 Ohm resistors with a Molex DuraClik connector. 
+            This allows for direct connection of a Jetson to a CAN bus, without the need for any additional hardware.
+
+            <h2>Jetson Shock Mount</h2>
+            A 3D printed shock mount for the Nvidia Jetson AGX Orin, allowing for secure mounting of the Jetson to a vehicle.
+
+            <h2>Perception System Mount</h2>
+            A 3D printed mount for a perception system, providing an integrated mount for a camera and lidar sensor, with adjustable angles for optimal positioning.
+
+        </div>
+
     </div>
 
     
