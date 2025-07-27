@@ -114,6 +114,15 @@
     cursor: pointer;
 }
 
+.CarouselItemFrame {
+    width: 100%;
+    height: calc(100% - 21pt); /* Full height minus padding */
+    border: none;
+    margin-top: 5pt;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
 @media only screen and (min-width: 450px) {
     .CarouselItem {
         width: 300pt;
