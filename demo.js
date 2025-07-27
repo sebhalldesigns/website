@@ -3240,8 +3240,8 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
 var ASM_CONSTS = {
-  217252: () => { return window.innerWidth; },  
- 217282: () => { return window.innerHeight; }
+  217812: () => { return window.innerWidth; },  
+ 217842: () => { return window.innerHeight; }
 };
 
 // Imports from the Wasm binary.
